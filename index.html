@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Login - Bank Soal TOI (Teknik Otomasi Industri)</title>
+    <title>Portal Login & Pendaftaran - Bank Soal TOI</title>
     <style>
         :root {
             --primary-color: #0284c7;
@@ -116,7 +116,7 @@
             box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
         }
 
-        .btn-login {
+        .btn-action {
             width: 100%;
             background-color: var(--primary-color);
             color: white;
@@ -130,11 +130,11 @@
             margin-top: 10px;
         }
 
-        .btn-login:hover {
+        .btn-action:hover {
             background-color: var(--primary-hover);
         }
 
-        .btn-login:active {
+        .btn-action:active {
             transform: scale(0.98);
         }
 
@@ -157,12 +157,30 @@
 
         .badge-student { background: #dcfce7; color: var(--student-color); }
         .badge-teacher { background: #fef3c7; color: var(--teacher-color); }
+        .badge-register { background: #e0f2fe; color: var(--primary-color); }
 
         .helper-text {
             text-align: center;
             margin-top: 20px;
             font-size: 0.8rem;
             color: var(--text-muted);
+        }
+
+        .switch-auth {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .switch-auth a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .switch-auth a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -175,7 +193,7 @@
     </div>
 
     <!-- Tombol Tab Pemilihan Login -->
-    <div class="tab-container">
+    <div class="tab-container" id="login-tabs">
         <button class="tab-btn active" onclick="switchTab('student', event)">Login Siswa</button>
         <button class="tab-btn" onclick="switchTab('teacher', event)">Login Guru</button>
     </div>
@@ -194,8 +212,11 @@
                 <label class="form-label">Password</label>
                 <input type="password" class="form-input" placeholder="Masukkan password siswa" required>
             </div>
-            <button type="submit" class="btn-login">Masuk ke Ujian TOI</button>
+            <button type="submit" class="btn-action">Masuk ke Ujian TOI</button>
         </form>
+        <div class="switch-auth">
+            Belum punya akun? <a href="#" onclick="toggleRegisterMode(true)">Daftar Akun Baru</a>
+        </div>
     </div>
 
     <!-- Form Login Guru -->
@@ -212,8 +233,44 @@
                 <label class="form-label">Password</label>
                 <input type="password" class="form-input" placeholder="Masukkan password pengajar" required>
             </div>
-            <button type="submit" class="btn-login" style="background-color: var(--teacher-color);">Kelola Bank Soal</button>
+            <button type="submit" class="btn-action" style="background-color: var(--teacher-color);">Kelola Bank Soal</button>
         </form>
+        <div class="switch-auth">
+            Belum punya akun? <a href="#" onclick="toggleRegisterMode(true)">Daftar Akun Baru</a>
+        </div>
+    </div>
+
+    <!-- Form Pendaftaran Akun Baru (Hidden secara default) -->
+    <div id="register-form" class="form-section">
+        <div style="text-align: center;">
+            <span class="role-badge badge-register">Pendaftaran Akun Baru</span>
+        </div>
+        <form onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <label class="form-label">Pilih Peran / Status</label>
+                <select class="form-input" id="reg-role" required>
+                    <option value="" disabled selected>-- Pilih Peran --</option>
+                    <option value="Siswa">Siswa / Peserta Didik</option>
+                    <option value="Guru">Guru / Instruktur</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Nama Lengkap</label>
+                <input type="text" class="form-input" placeholder="Masukkan nama lengkap" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">NIS / NIP / ID Pengenal</label>
+                <input type="text" class="form-input" placeholder="Nomor Induk / ID Pengenal" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Buat Password Baru</label>
+                <input type="password" class="form-input" placeholder="Buat password akun" required>
+            </div>
+            <button type="submit" class="btn-action">Daftar Akun</button>
+        </form>
+        <div class="switch-auth">
+            Sudah punya akun? <a href="#" onclick="toggleRegisterMode(false)">Kembali ke Login</a>
+        </div>
     </div>
 
     <div class="helper-text">
@@ -223,12 +280,10 @@
 
 <script>
     function switchTab(role, event) {
-        // Atur tombol aktif
         const buttons = document.querySelectorAll('.tab-btn');
         buttons.forEach(btn => btn.classList.remove('active'));
         event.currentTarget.classList.add('active');
 
-        // Atur tampilan form aktif
         const studentForm = document.getElementById('student-form');
         const teacherForm = document.getElementById('teacher-form');
 
@@ -241,9 +296,35 @@
         }
     }
 
+    function toggleRegisterMode(isRegister) {
+        const loginTabs = document.getElementById('login-tabs');
+        const studentForm = document.getElementById('student-form');
+        const teacherForm = document.getElementById('teacher-form');
+        const registerForm = document.getElementById('register-form');
+
+        if (isRegister) {
+            loginTabs.style.display = 'none';
+            studentForm.classList.remove('active');
+            teacherForm.classList.remove('active');
+            registerForm.classList.add('active');
+        } else {
+            loginTabs.style.display = 'flex';
+            registerForm.classList.remove('active');
+            // Default kembali ke tab siswa
+            studentForm.classList.add('active');
+        }
+    }
+
     function handleLogin(event, role) {
         event.preventDefault();
         alert(`Simulasi Berhasil: Anda masuk sebagai ${role} Bank Soal TOI.`);
+    }
+
+    function handleRegister(event) {
+        event.preventDefault();
+        const role = document.getElementById('reg-role').value;
+        alert(`Pendaftaran Akun ${role} Berhasil! Silakan masuk menggunakan akun yang telah dibuat.`);
+        toggleRegisterMode(false);
     }
 </script>
 
