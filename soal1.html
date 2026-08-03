@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Ujian K3LH & Elektronika Dasar</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #16a34a;
+            --danger-color: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .quiz-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            border-bottom: 2px solid var(--bg-color);
+            padding-bottom: 10px;
+        }
+
+        .question-number {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .competency-badge {
+            background: #eff6ff;
+            color: var(--primary-color);
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-main);
+        }
+
+        .note-multiple {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .option-item:hover {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .option-item input[type="checkbox"] {
+            margin-top: 4px;
+            accent-color: var(--primary-color);
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .option-text {
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        /* Feedback Styling */
+        .option-item.correct {
+            background-color: #dcfce7;
+            border-color: #22c55e;
+        }
+
+        .option-item.incorrect {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+        }
+
+        .explanation {
+            margin-top: 12px;
+            padding: 10px 14px;
+            background-color: #f8fafc;
+            border-left: 4px solid var(--primary-color);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: none;
+        }
+
+        .submit-container {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .btn-submit {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .question-card { padding: 16px; }
+            .question-header { flex-direction: column; gap: 6px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Simulasi Ujian Interaktif K3LH & Elektronika Dasar</h1>
+        <p>Pilih jawaban yang benar (lebih dari satu), lalu klik tombol "Selesai & Nilai" untuk melihat hasil otomatis.</p>
+    </header>
+
+    <form class="quiz-form" id="quizForm">
+
+        <!-- SOAL 1 -->
+        <div class="question-card" data-question="1">
+            <div class="question-header">
+                <span class="question-number">Soal 1</span>
+                <span class="competency-badge">Waste Control & Limbah Industri</span>
+            </div>
+            <div class="question-text">
+                Manakah pernyataan berikut yang merupakan bagian dari prinsip dan tindakan yang tepat dalam pengendalian limbah (waste control) di industri elektronika?
+            </div>
+            <div class="note-multiple">*(Jawaban benar lebih dari satu)*</div>
+            <div class="options-list">
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q1" value="A">
+                    <span class="option-text">Melakukan proses recycle (daur ulang) pada komponen atau sisa bahan yang masih bisa dimanfaatkan kembali.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q1" value="B">
+                    <span class="option-text">Membuang seluruh sisa limbah cair produksi secara langsung ke sungai terdekat tanpa melalui proses netralisasi.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q1" value="C">
+                    <span class="option-text">Menerapkan prinsip reduce dengan cara meminimalkan penggunaan bahan baku berbahaya yang berpotensi menjadi limbah beracun.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q1" value="D">
+                    <span class="option-text">Memisahkan antara limbah organik, anorganik, dan limbah bahan berbahaya dan beracun (B3) di tempat pembuangan khusus.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q1" value="E">
+                    <span class="option-text">Membakar seluruh sampah plastik dan komponen bekas di ruang terbuka sekitar area pabrik secara rutin.</span>
+                </label>
+            </div>
+            <div class="explanation">Jawaban benar: A, C, dan D. Tindakan daur ulang, pengurangan bahan berbahaya, dan pemilahan limbah B3 adalah praktik waste control yang tepat.</div>
+        </div>
+
+        <!-- SOAL 2 -->
+        <div class="question-card" data-question="2">
+            <div class="question-header">
+                <span class="question-number">Soal 2</span>
+                <span class="competency-badge">Prinsip Dasar K3LH</span>
+            </div>
+            <div class="question-text">
+                Tindakan apa saja yang wajib diperhatikan dan dilakukan untuk menerapkan prinsip dasar K3LH saat bekerja di laboratorium atau bengkel elektronika?
+            </div>
+            <div class="note-multiple">*(Jawaban benar lebih dari satu)*</div>
+            <div class="options-list">
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q2" value="A">
+                    <span class="option-text">Memastikan tangan dalam keadaan kering sebelum menyentuh peralatan atau sumber tegangan listrik.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q2" value="B">
+                    <span class="option-text">Mengabaikan penggunaan sepatu pengaman dengan alasan ruang bengkel tampak bersih dan kering.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q2" value="C">
+                    <span class="option-text">Memeriksa kondisi fisik kabel dan alat ukur sebelum dihubungkan ke sumber tegangan listrik utama.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q2" value="D">
+                    <span class="option-text">Menjaga area kerja tetap bersih dan bebas dari ceceran cairan kimia atau kabel yang berserakan.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q2" value="E">
+                    <span class="option-text">Membawa makanan dan minuman ke dekat meja kerja saat proses penyolderan sedang berlangsung.</span>
+                </label>
+            </div>
+            <div class="explanation">Jawaban benar: A, C, dan D. Keselamatan kelistrikan dan kebersihan area kerja adalah prioritas utama di bengkel.</div>
+        </div>
+
+        <!-- SOAL 3 -->
+        <div class="question-card" data-question="3">
+            <div class="question-header">
+                <span class="question-number">Soal 3</span>
+                <span class="competency-badge">Penanganan Limbah B3</span>
+            </div>
+            <div class="question-text">
+                Bahan atau komponen elektronika manakah yang dikategorikan sebagai limbah Berbahaya dan Beracun (B3) serta memerlukan prosedur penanganan khusus?
+            </div>
+            <div class="note-multiple">*(Jawaban benar lebih dari satu)*</div>
+            <div class="options-list">
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q3" value="A">
+                    <span class="option-text">Cairan elektrolit yang bocor dari komponen kapasitor elektrolit (elco).</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q3" value="B">
+                    <span class="option-text">Sisa kawat timah solder yang mengandung unsur logam berat timbal (lead).</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q3" value="C">
+                    <span class="option-text">Potongan sisa kabel tembaga murni yang belum dilapisi zat kimia berbahaya.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q3" value="D">
+                    <span class="option-text">Baterai bekas jenis litium-ion dan akumulator (aki) yang sudah rusak.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q3" value="E">
+                    <span class="option-text">Kotak kemasan kardus pembungkus komponen resistor dan kapasitor baru.</span>
+                </label>
+            </div>
+            <div class="explanation">Jawaban benar: A, B, dan D. Komponen yang mengandung cairan elektrolit, timbal solder, serta baterai/aki termasuk limbah B3.</div>
+        </div>
+
+        <!-- SOAL 4 -->
+        <div class="question-card" data-question="4">
+            <div class="question-header">
+                <span class="question-number">Soal 4</span>
+                <span class="competency-badge">Rambu-rambu K3</span>
+            </div>
+            <div class="question-text">
+                Manakah pasangan rambu keselamatan kerja dan arti/makna yang paling tepat?
+            </div>
+            <div class="note-multiple">*(Jawaban benar lebih dari satu)*</div>
+            <div class="options-list">
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q4" value="A">
+                    <span class="option-text">Rambu berbentuk segitiga berlatar kuning: Menunjukkan adanya peringatan akan potensi bahaya di area tersebut.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q4" value="B">
+                    <span class="option-text">Rambu berbentuk lingkaran merah dengan garis diagonal: Menunjukkan petunjuk arah jalur evakuasi darurat.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q4" value="C">
+                    <span class="option-text">Rambu berbentuk lingkaran biru dengan simbol gambar alat pelindung: Menunjukkan perintah wajib menggunakan APD.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q4" value="D">
+                    <span class="option-text">Rambu berbentuk kotak hijau: Menunjukkan letak fasilitas keselamatan seperti kotak P3K atau jalur evakuasi.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q4" value="E">
+                    <span class="option-text">Rambu berlatar merah berbentuk segitiga terbalik: Menunjukkan lokasi penyimpanan komponen pasif bebas tegangan.</span>
+                </label>
+            </div>
+            <div class="explanation">Jawaban benar: A, C, dan D. Kuning = Peringatan, Biru = Perintah/Wajib APD, Hijau = Fasilitas Keselamatan/Darurat.</div>
+        </div>
+
+        <!-- SOAL 5 -->
+        <div class="question-card" data-question="5">
+            <div class="question-header">
+                <span class="question-number">Soal 5</span>
+                <span class="competency-badge">Karakteristik Besaran Listrik</span>
+            </div>
+            <div class="question-text">
+                Pernyataan manakah yang benar mengenai karakteristik besaran listrik dasar dalam suatu rangkaian tertutup?
+            </div>
+            <div class="note-multiple">*(Jawaban benar lebih dari satu)*</div>
+            <div class="options-list">
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q5" value="A">
+                    <span class="option-text">Arus listrik (I) adalah laju aliran muatan listrik yang melewati suatu penghantar tiap satuan waktu.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q5" value="B">
+                    <span class="option-text">Tegangan (V) merepresentasikan perbedaan potensial listrik antara dua titik di dalam rangkaian.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q5" value="C">
+                    <span class="option-text">Resistansi suatu kawat penghantar nilainya akan selalu berbanding terbalik dengan panjang kawat tersebut.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q5" value="D">
+                    <span class="option-text">Daya listrik (P) mencerminkan besarnya energi yang diserap atau dilepaskan oleh komponen per satuan waktu.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q5" value="E">
+                    <span class="option-text">Satuan internasional untuk besaran arus listrik adalah Volt, sedangkan tegangan bersatuan Ampere.</span>
+                </label>
+            </div>
+            <div class="explanation">Jawaban benar: A, B, dan D. Hambatan kawat berbanding lurus dengan panjangnya, dan satuan arus adalah Ampere sedangkan tegangan adalah Volt.</div>
+        </div>
+
+        <!-- SOAL 6 -->
+        <div class="question-card" data-question="6">
+            <div class="question-header">
+                <span class="question-number">Soal 6</span>
+                <span class="competency-badge">Hukum Ohm & Perhitungan</span>
+            </div>
+            <div class="question-text">
+                Berdasarkan Hukum Ohm dan karakteristik kelistrikan dasar, manakah pernyataan matematis atau hubungan variabel yang benar?
+            </div>
+            <div class="note-multiple">*(Jawaban benar lebih dari satu)*</div>
+            <div class="options-list">
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q6" value="A">
+                    <span class="option-text">Besar arus listrik berbanding lurus dengan besar tegangan pada nilai resistansi yang konstan.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q6" value="B">
+                    <span class="option-text">Nilai resistansi dapat dicari dengan membagi besarnya tegangan terhadap kuat arus (R = V / I).</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q6" value="C">
+                    <span class="option-text">Jika tegangan dinaikkan dua kali lipat pada hambatan tetap, maka arus listrik yang mengalir akan menjadi setengahnya.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q6" value="D">
+                    <span class="option-text">Daya listrik pada rangkaian DC dapat dihitung dengan mengalikan tegangan dengan arus (P = V &times; I).</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q6" value="E">
+                    <span class="option-text">Hambatan listrik total akan bernilai nol jika tidak ada arus sama sekali yang mengalir melalui komponen.</span>
+                </label>
+            </div>
+            <div class="explanation">Jawaban benar: A, B, dan D. Sesuai dengan Hukum Ohm ($I = V/R$) dan rumus daya ($P = V \times I$).</div>
+        </div>
+
+        <!-- SOAL 7 -->
+        <div class="question-card" data-question="7">
+            <div class="question-header">
+                <span class="question-number">Soal 7</span>
+                <span class="competency-badge">Penggunaan APD</span>
+            </div>
+            <div class="question-text">
+                Alat Pelindung Diri (APD) apa saja yang sangat dianjurkan atau wajib digunakan saat melakukan kegiatan praktik penyolderan dan perakitan komponen di bengkel elektronika?
+            </div>
+            <div class="note-multiple">*(Jawaban benar lebih dari satu)*</div>
+            <div class="options-list">
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q7" value="A">
+                    <span class="option-text">Kacamata pelindung (safety glasses) untuk melindungi mata dari percikan timah atau potongan kawat.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q7" value="B">
+                    <span class="option-text">Masker pelindung pernapasan guna menghindari paparan uap timah dan flux solder.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q7" value="C">
+                    <span class="option-text">Sarung tangan rajut tebal berlapis besi untuk memegang komponen bertegangan tinggi secara langsung.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q7" value="D">
+                    <span class="option-text">Helm proyek konstruksi bangunan bertingkat untuk melindungi kepala dari benturan benda berat.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q7" value="E">
+                    <span class="option-text">Pakaian kerja praktikum (wearpack) berlengan panjang untuk melindungi kulit dari cipratan bahan kimia.</span>
+                </label>
+            </div>
+            <div class="explanation">Jawaban benar: A, B, dan E. Kacamata, masker uap timah, dan wearpack sangat esensial untuk proses penyolderan.</div>
+        </div>
+
+        <!-- SOAL 8 -->
+        <div class="question-card" data-question="8">
+            <div class="question-header">
+                <span class="question-number">Soal 8</span>
+                <span class="competency-badge">Prosedur Darurat K3LH</span>
+            </div>
+            <div class="question-text">
+                Langkah-langkah penyelamatan darurat yang benar apabila melihat seseorang mengalami kecelakaan akibat tersengat aliran listrik aktif adalah...
+            </div>
+            <div class="note-multiple">*(Jawaban benar lebih dari satu)*</div>
+            <div class="options-list">
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q8" value="A">
+                    <span class="option-text">Segera memutuskan aliran listrik utama (MCB) atau mencabut steker sumber tegangan.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q8" value="B">
+                    <span class="option-text">Menarik tubuh korban secara langsung menggunakan tangan kosong agar cepat terlepas.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q8" value="C">
+                    <span class="option-text">Menggunakan benda isolator kering (seperti kayu atau karet) untuk menjauhkan kabel berarus dari korban.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q8" value="D">
+                    <span class="option-text">Memeriksa kesadaran korban dan segera menghubungi petugas medis atau pos P3K terdekat setelah arus putus.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q8" value="E">
+                    <span class="option-text">Menyiram korban dengan air dingin secara langsung untuk meredakan panas akibat sengatan listrik.</span>
+                </label>
+            </div>
+            <div class="explanation">Jawaban benar: A, C, dan D. Utamakan pemutusan arus listrik atau gunakan isolator kering agar penolong tidak ikut tersengat.</div>
+        </div>
+
+        <!-- SOAL 9 -->
+        <div class="question-card" data-question="9">
+            <div class="question-header">
+                <span class="question-number">Soal 9</span>
+                <span class="competency-badge">Karakteristik Komponen Dasar</span>
+            </div>
+            <div class="question-text">
+                Manakah karakteristik yang sesuai mengenai pengaruh perubahan hambatan terhadap arus dan tegangan dalam rangkaian sederhana?
+            </div>
+            <div class="note-multiple">*(Jawaban benar lebih dari satu)*</div>
+            <div class="options-list">
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q9" value="A">
+                    <span class="option-text">Jika nilai resistansi diperbesar sementara tegangan sumber tetap, maka arus yang mengalir akan semakin kecil.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q9" value="B">
+                    <span class="option-text">Penambahan besar hambatan pada sumber tegangan tetap akan membuat daya yang diserap komponen semakin besar.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q9" value="C">
+                    <span class="option-text">Penurunan nilai resistansi pada tegangan konstan akan menyebabkan peningkatan jumlah arus listrik.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q9" value="D">
+                    <span class="option-text">Hambatan listrik di dalam rangkaian tidak memiliki kaitan sama sekali dengan besarnya nilai arus yang mengalir.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q9" value="E">
+                    <span class="option-text">Karakteristik hambatan pada komponen resistor tetap dapat dianalisis menggunakan perbandingan nilai tegangan dan arus.</span>
+                </label>
+            </div>
+            <div class="explanation">Jawaban benar: A, C, dan E. Hambatan berbanding terbalik dengan arus listrik sesuai Hukum Ohm.</div>
+        </div>
+
+        <!-- SOAL 10 -->
+        <div class="question-card" data-question="10">
+            <div class="question-header">
+                <span class="question-number">Soal 10</span>
+                <span class="competency-badge">Pengelolaan Limbah & Etika Kerja</span>
+            </div>
+            <div class="question-text">
+                Faktor-faktor apa saja yang mendasari perlunya pengelolaan limbah B3 secara ketat di lingkungan industri dan pendidikan elektronika?
+            </div>
+            <div class="note-multiple">*(Jawaban benar lebih dari satu)*</div>
+            <div class="options-list">
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q10" value="A">
+                    <span class="option-text">Mencegah terjadinya pencemaran berat pada ekosistem tanah dan sumber air bersih di sekitar lokasi kerja.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q10" value="B">
+                    <span class="option-text">Mempercepat proses produksi pabrik agar menghasilkan keuntungan finansial yang instan tanpa aturan.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q10" value="C">
+                    <span class="option-text">Melindungi kesehatan pekerja dan masyarakat dari risiko keracunan akibat paparan logam berat.</span>
+                </label>
+                <label class="option-item" data-answer="true">
+                    <input type="checkbox" name="q10" value="D">
+                    <span class="option-text">Mematuhi regulasi pemerintah mengenai standar kelayakan lingkungan hidup dan keselamatan industri.</span>
+                </label>
+                <label class="option-item" data-answer="false">
+                    <input type="checkbox" name="q10" value="E">
+                    <span class="option-text">Memudahkan pembuangan limbah beracun ke tempat pembuangan sampah rumah tangga biasa.</span>
+                </label>
+            </div>
+            <div class="explanation">Jawaban benar: A, C, dan D. Pengelolaan limbah B3 penting untuk pencegahan pencemaran, perlindungan kesehatan, dan kepatuhan hukum.</div>
+        </div>
+
+        <div class="submit-container">
+            <button type="button" class="btn-submit" onclick="evaluateQuiz()">Selesai & Nilai</button>
+        </div>
+
+        <div class="result-box" id="resultBox"></div>
+
+    </form>
+</div>
+
+<script>
+    function evaluateQuiz() {
+        const cards = document.querySelectorAll('.question-card');
+        let totalScore = 0;
+        let answeredQuestions = 0;
+
+        cards.forEach((card, index) => {
+            const options = card.querySelectorAll('.option-item');
+            const explanation = card.querySelector('.explanation');
+            explanation.style.display = 'block';
+
+            let questionCorrect = true;
+            let hasSelection = false;
+
+            options.forEach(opt => {
+                const checkbox = opt.querySelector('input[type="checkbox"]');
+                const isTrueAnswer = opt.getAttribute('data-answer') === 'true';
+
+                if (checkbox.checked) {
+                    hasSelection = true;
+                }
+
+                // Beri warna visual
+                if (isTrueAnswer) {
+                    opt.classList.add('correct');
+                } else if (checkbox.checked && !isTrueAnswer) {
+                    opt.classList.add('incorrect');
+                    questionCorrect = false;
+                }
+
+                // Jika kunci benar tapi tidak dipilih user
+                if (isTrueAnswer && !checkbox.checked) {
+                    questionCorrect = false;
+                }
+            });
+
+            if (hasSelection && questionCorrect) {
+                totalScore += 10;
+            }
+        });
+
+        const resultBox = document.getElementById('resultBox');
+        resultBox.style.display = 'block';
+        resultBox.innerHTML = `Skor Akhir Anda: ${totalScore} dari 100`;
+        resultBox.style.color = totalScore >= 75 ? 'var(--success-color)' : 'var(--danger-color)';
+        
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
