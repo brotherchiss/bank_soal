@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Utama - Bank Soal & Manajemen Akun</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #16a34a;
+            --warning-color: #d97706;
+            --admin-color: #7c3aed;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Card Grid Layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .badge-admin { background: #f3e8ff; color: var(--admin-color); }
+        .badge-teacher { background: #fef3c7; color: var(--warning-color); }
+        .badge-student { background: #dcfce7; color: var(--success-color); }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .card-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: #eff6ff;
+            color: var(--primary-hover);
+        }
+
+        /* Table Styling for Credentials Info */
+        .table-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            header { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Portal Akses & Bank Soal</h1>
+        <p>Sistem Manajemen Pembelajaran, Evaluasi K3LH, dan Kompetensi Elektronika Dasar</p>
+    </header>
+
+    <!-- SECTION: AKSES BANK SOAL & SIMULASI -->
+    <div class="section-title">📂 Menu Utama Bank Soal</div>
+    <div class="grid-container">
+        
+        <div class="card">
+            <div>
+                <div class="card-header">
+                    <span class="card-title">Soal Pilihan Ganda Statis</span>
+                    <span class="badge badge-student">Latihan</span>
+                </div>
+                <div class="card-desc">Halaman kumpulan 10 soal uji kompetensi lengkap dengan opsi jawaban dalam format dokumen statis.</div>
+            </div>
+            <div class="card-footer">
+                <a href="soal-siswa.html" class="btn btn-outline" target="_blank">Buka Halaman Soal</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div>
+                <div class="card-header">
+                    <span class="card-title">Simulasi Ujian Interaktif</span>
+                    <span class="badge badge-student">Evaluasi</span>
+                </div>
+                <div class="card-desc">Simulasi ujian online dengan sistem koreksi otomatis, penilaian instan, dan kunci pembahasan lengkap.</div>
+            </div>
+            <div class="card-footer">
+                <a href="simulasi-ujian.html" class="btn" target="_blank">Mulai Simulasi Ujian</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SECTION: DAFTAR AKUN & HAK AKSES -->
+    <div class="section-title">👥 Daftar Akun & Hak Akses Sistem</div>
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Level Peran</th>
+                    <th>Nama Akun / Pengguna</th>
+                    <th>Hak Akses & Fitur</th>
+                    <th>Aksi Cepat</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge badge-admin">Administrator</span></td>
+                    <td>Admin Sistem (Bapak/Ibu IT)</td>
+                    <td>Mengelola bank soal, menambah akun pengguna, serta melakukan rekapitulasi nilai global.</td>
+                    <td><a href="#login-admin" class="btn-outline" style="padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; text-decoration: none; display: inline-block;" onclick="alert('Fitur Login Admin diarahkan ke dashboard master.')">Login Admin</a></td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-teacher">Guru / Penguji</span></td>
+                    <td>Instruktur Mata Pelajaran K3LH</td>
+                    <td>Membuat, mengedit, memvalidasi soal, dan memantau progres hasil evaluasi siswa.</td>
+                    <td><a href="#login-guru" class="btn-outline" style="padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; text-decoration: none; display: inline-block;" onclick="alert('Fitur Login Guru diarahkan ke panel instruktur.')">Login Guru</a></td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-student">Siswa / Peserta</span></td>
+                    <td>Peserta Didik / Praktikan</td>
+                    <td>Mengakses latihan soal pilihan ganda kompleks dan mengerjakan simulasi ujian online.</td>
+                    <td><a href="simulasi-ujian.html" class="btn" style="padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; text-decoration: none; display: inline-block;" target="_blank">Mulai Ujian</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>
